@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  web1:
+    image: nginx
+    expose:
+      - "80"
+    environment:
+      - VIRTUAL_HOST=eren.localhost
+
+    volumes:
+      - ./web1:/usr/share/nginx/html
+    networks: 
+      - web
+
+  web2:
+    image: nginx
+    expose:
+      - "80"
+    environment:
+      - VIRTUAL_HOST=robot.localhost
+  
+    volumes:
+      - ./web2:/usr/share/nginx/html
+    networks: 
+      - web
+
+  rp:
+    image: jwilder/nginx-proxy
+    ports: 
+      - "127.0.0.1:80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    networks: 
+      - web
+
+networks: 
+  web:
+    driver: bridge
